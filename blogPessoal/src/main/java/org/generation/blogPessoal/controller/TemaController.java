@@ -1,6 +1,7 @@
 package org.generation.blogPessoal.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.generation.blogPessoal.model.Tema;
 import org.generation.blogPessoal.repository.TemaRepository;
@@ -25,39 +26,64 @@ public class TemaController {
 
 	@Autowired
 	private TemaRepository repository;
-	
+
+	// BUSCAS
+	// BUSCA TODOS
 	@GetMapping
-	public ResponseEntity<List<Tema>> getAll(){
-		return ResponseEntity.status(200).body(repository.findAll());
+	public ResponseEntity<List<Tema>> getAll() {
+		List<Tema> list = repository.findAll();
+
+		if (list.isEmpty()) {
+			return ResponseEntity.status(204).build();
+		} else {
+			return ResponseEntity.status(200).body(list);
+		}
 	}
-	
-	@GetMapping("/{id}")
-	public ResponseEntity<Tema> getById(@PathVariable Long id){
-		return repository.findById(id)
-				.map(resp -> ResponseEntity.status(200).body(resp))
-				.orElseGet(() -> {
-					throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Id não encontrado");
-				});
+
+	// BUSCA ID
+	@GetMapping("/{id_tema}")
+	public ResponseEntity<Tema> getById(@PathVariable(value = "id_tema") Long id) {
+		return repository.findById(id).map(resp -> ResponseEntity.status(200).body(resp)).orElseGet(() -> {
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Id do tema não encontrado");
+		});
 	}
-	
-	@GetMapping("/nome/{nome}")
-	public ResponseEntity<List<Tema>> getByName(@PathVariable String nome){
-		return ResponseEntity.status(200).body(repository.findAllByDescricaoContainingIgnoreCase(nome));
+
+	// BUSCA por NOME
+	@GetMapping("/nome/{nome_tema}")
+	public ResponseEntity<List<Tema>> getByName(@PathVariable(value = "nome_tema")  String nome) {
+		List<Tema> list = repository.findAllByDescricaoContainingIgnoreCase(nome);
+		if(list.isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Lista vazia!");
+		} else {
+			return ResponseEntity.status(200).body(list);
+		}
 	}
-	
+
+	// SAVE
 	@PostMapping
-	public ResponseEntity<Tema> saveTema (@RequestBody Tema tema){
+	public ResponseEntity<Tema> saveTema(@RequestBody Tema tema) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(tema));
 	}
-	
+
+	// UPDATE -> Alteracao
 	@PutMapping
-	public ResponseEntity<Tema> updateTema(@RequestBody Tema tema){
-		return ResponseEntity.ok(repository.save(tema));
+	public ResponseEntity<Tema> updateTema(@RequestBody Tema tema) {
+		return repository.findById(tema.getId())
+				.map(resp -> ResponseEntity.status(200).body(repository.save(tema))).orElseGet(() -> {
+					throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id não encontrado!");
+				});
 	}
-	
-	@DeleteMapping("/delete/{id}")
-	public void deleteTema(@PathVariable Long id) {
-		repository.deleteById(id);
+
+	// DELETE
+	@DeleteMapping("/delete/{id_tema}")
+	public ResponseEntity<?> deleteTema(@PathVariable(value = "id_tema") Long id) {
+		Optional<Tema> optional = repository.findById(id);
+		if(optional.isPresent()) {
+			repository.deleteById(id);
+			return ResponseEntity.status(200).build();
+		} else {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id não encontrado!");
+		}
 	}
-	
+
 }

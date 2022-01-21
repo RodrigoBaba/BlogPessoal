@@ -39,7 +39,6 @@ public class PostagemController {
 		}
 	}
 
-
 	// BUSCA pelo 'id' digitado
 	@GetMapping("/{id_postagem}")
 	public ResponseEntity<Postagem> getById(@PathVariable(value = "id_postagem") Long id) {
@@ -58,7 +57,7 @@ public class PostagemController {
 		} else {
 			return ResponseEntity.status(200).body(list);
 		}
-	}	
+	}
 
 	// BUSCA por palavras no texto
 	// retornando uma lista com todos os que tiverem o 'texto' digitado
@@ -86,7 +85,7 @@ public class PostagemController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(postagem));
 	}
 
-	// ALTERA o que esta no banco de dados, precisa colocar o ID junto	
+	// ALTERA o que esta no banco de dados, precisa colocar o ID junto
 	@PutMapping("/update")
 	public ResponseEntity<Postagem> updatePostagem(@RequestBody Postagem postagem) {
 		return repository.findById(postagem.getId())
@@ -94,7 +93,7 @@ public class PostagemController {
 					throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id não encontrado!");
 				});
 	}
-	
+
 	// DELETAR um dado especifico
 	@SuppressWarnings("rawtypes")
 	@DeleteMapping("/delete/{id_postagem}")
