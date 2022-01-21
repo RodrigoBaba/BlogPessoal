@@ -1,6 +1,7 @@
 package org.generation.blogPessoal.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.generation.blogPessoal.model.Postagem;
 import org.generation.blogPessoal.repository.PostagemRepository;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/postagens")
@@ -28,61 +30,82 @@ public class PostagemController {
 	// BUSCA todos as postagens, retornando uma lista completa
 	@GetMapping("/all")
 	public ResponseEntity<List<Postagem>> GetAll() {
-		return ResponseEntity.ok(repository.findAll());
+		List<Postagem> list = repository.findAll();
+
+		if (list.isEmpty()) {
+			return ResponseEntity.status(204).build();
+		} else {
+			return ResponseEntity.status(200).body(list);
+		}
 	}
 
+
 	// BUSCA pelo 'id' digitado
-	@GetMapping("/{id}")
-	public ResponseEntity<Postagem> getById(@PathVariable Long id) {
-		return repository.findById(id).map(resp -> ResponseEntity.ok(resp)).orElse(ResponseEntity.notFound().build());
+	@GetMapping("/{id_postagem}")
+	public ResponseEntity<Postagem> getById(@PathVariable(value = "id_postagem") Long id) {
+		return repository.findById(id).map(resp -> ResponseEntity.status(200).body(resp)).orElseGet(() -> {
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Id da postagem não encontrado!");
+		});
 	}
 
 	// BUSCA por palavras no titulo
 	// retornando uma lista com todos os que tiverem o 'titulo' digitado
-	@GetMapping("/titulo/{titulo}")
-	public ResponseEntity<List<Postagem>> getByTitulo(@PathVariable String titulo) {
-		return ResponseEntity.ok(repository.findAllByTituloContainingIgnoreCase(titulo));
-	}
-	
-	// BUSCA por palavras no titulo
-		// retornando uma lista com todos os que tiverem o 'titulo' digitado
-		@GetMapping("/titulocompleto/{titulo}")
-		public ResponseEntity<Postagem> getByTituloOnlyOne(@PathVariable String titulo) {
-			return ResponseEntity.ok(repository.findByTitulo(titulo));
+	@GetMapping("/titulo/{titulo_postagem}")
+	public ResponseEntity<List<Postagem>> getByTitulo(@PathVariable(value = "titulo_postagem") String titulo) {
+		List<Postagem> list = repository.findAllByTituloContainingIgnoreCase(titulo);
+		if (list.isEmpty()) {
+			return ResponseEntity.status(204).build();
+		} else {
+			return ResponseEntity.status(200).body(list);
 		}
-	
-	//BUSCA por palavras no texto
+	}	
+
+	// BUSCA por palavras no texto
 	// retornando uma lista com todos os que tiverem o 'texto' digitado
-	@GetMapping("/texto/{texto}")
-	public ResponseEntity<List<Postagem>> getByTexto(@PathVariable String texto){
-		return ResponseEntity.ok(repository.findAllByTextoContainingIgnoreCase(texto));
+	@GetMapping("/texto/{texto_postagem}")
+	public ResponseEntity<List<Postagem>> getByTexto(@PathVariable(value = "texto_postagem") String texto) {
+		List<Postagem> list = repository.findAllByTextoContainingIgnoreCase(texto);
+		if (list.isEmpty()) {
+			return ResponseEntity.status(204).build();
+		} else {
+			return ResponseEntity.status(200).body(list);
+		}
 	}
-	
 
 	// SALVA um dado no banco de dados
 	// BOAZ
-	@PostMapping("/save")
+	@PostMapping("/saveboaz")
 	public ResponseEntity<Postagem> savePostagem(@RequestBody Postagem postagem) {
 		return ResponseEntity.status(201).body(repository.save(postagem));
 	}
 
 	// SALVA um dado no banco de dados
 	// MARCELO
-	@PostMapping
-	public ResponseEntity<Postagem> post(@RequestBody Postagem postagem) {
+	@PostMapping("/savemarcelo")
+	public ResponseEntity<Postagem> salvarPostagem(@RequestBody Postagem postagem) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(postagem));
 	}
 
-	// ALTERA o que esta no banco de dados, precisa colocar o ID junto
-	@PutMapping
-	public ResponseEntity<Postagem> put(@RequestBody Postagem postagem) {
-		return ResponseEntity.status(HttpStatus.OK).body(repository.save(postagem));
+	// ALTERA o que esta no banco de dados, precisa colocar o ID junto	
+	@PutMapping("/update")
+	public ResponseEntity<Postagem> updatePostagem(@RequestBody Postagem postagem) {
+		return repository.findById(postagem.getId())
+				.map(resp -> ResponseEntity.status(200).body(repository.save(postagem))).orElseGet(() -> {
+					throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id não encontrado!");
+				});
 	}
 	
 	// DELETAR um dado especifico
-	@DeleteMapping("/{id}")
-	public void delete(@PathVariable Long id) {
-		repository.deleteById(id);
+	@SuppressWarnings("rawtypes")
+	@DeleteMapping("/delete/{id_postagem}")
+	public ResponseEntity deletePostagem(@PathVariable(value = "id_postagem") Long id) {
+		Optional<Postagem> optional = repository.findById(id);
+		if (optional.isPresent()) {
+			repository.deleteById(id);
+			return ResponseEntity.status(200).build();
+		} else {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id não encontrado!");
+		}
 	}
 
 }
