@@ -29,4 +29,4 @@ Funções criadas:
 ### 📧 Contato
 
 - 📊 [Linkedin](https://www.linkedin.com/in/rodrigo-nuciatelli-baba-a64414217/)
-- 📫 Gmail - rodrigonuciatelli@gmail.com
+- 📫 [Gmail](rodrigonuciatelli@gmail.com)
