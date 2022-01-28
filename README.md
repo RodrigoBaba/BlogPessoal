@@ -7,3 +7,21 @@
 <p align="left"><strong>Bootcamp na Generation Brasil</strong>, agora no <strong>Bloco II</strong>.
 <br>
 </p>
+
+### 💻 Tecnologias
+
+Tecnologias usadas no projeto:
+
+- [x] [Java Framework Eclipse]
+- [x] [Spring Boot] 
+- [x] [MySQL]
+- [X] [Postman] 
+
+### 📚 Funções
+
+Funções criadas:
+
+- [x] [Model]
+- [x] [Repository]
+- [x] [Controller]
+- [x] [Segurança de Usuario]
