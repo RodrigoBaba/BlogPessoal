@@ -25,3 +25,7 @@ Funções criadas:
 - [x] [Repository]
 - [x] [Controller]
 - [x] [Segurança de Usuario]
+
+### 📧 Contato
+
+- [📊] [Linkedin](https://www.linkedin.com/in/rodrigo-nuciatelli-baba-a64414217/)
