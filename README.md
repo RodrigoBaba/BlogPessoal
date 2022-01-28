@@ -12,7 +12,7 @@
 
 Tecnologias usadas no projeto:
 
-- [x] [Java Framework Eclipse]
+- [x] [Java - Framework Eclipse]
 - [x] [Spring Boot] 
 - [x] [MySQL]
 - [X] [Postman] 
