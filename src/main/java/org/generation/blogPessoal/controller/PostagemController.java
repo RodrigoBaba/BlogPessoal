@@ -3,6 +3,8 @@ package org.generation.blogPessoal.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.generation.blogPessoal.model.Postagem;
 import org.generation.blogPessoal.repository.PostagemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +23,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/postagens")
-@CrossOrigin("*")
+@CrossOrigin(value = "*", allowedHeaders = "*")
 public class PostagemController {
 
 	@Autowired
 	private PostagemRepository repository;
 
-	// BUSCA todos as postagens, retornando uma lista completa
 	@GetMapping("/all")
 	public ResponseEntity<List<Postagem>> GetAll() {
 		List<Postagem> list = repository.findAll();
@@ -39,18 +40,15 @@ public class PostagemController {
 		}
 	}
 
-	// BUSCA pelo 'id' digitado
 	@GetMapping("/{id_postagem}")
 	public ResponseEntity<Postagem> getById(@PathVariable(value = "id_postagem") Long id) {
 		return repository.findById(id).map(resp -> ResponseEntity.status(200).body(resp)).orElseGet(() -> {
-			throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Id da postagem não encontrado!");
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Postagem não encontrado!");
 		});
 	}
 
-	// BUSCA por palavras no titulo
-	// retornando uma lista com todos os que tiverem o 'titulo' digitado
 	@GetMapping("/titulo/{titulo_postagem}")
-	public ResponseEntity<List<Postagem>> getByTitulo(@PathVariable(value = "titulo_postagem") String titulo) {
+	public ResponseEntity<List<Postagem>> getByTitle(@PathVariable(value = "titulo_postagem") String titulo) {
 		List<Postagem> list = repository.findAllByTituloContainingIgnoreCase(titulo);
 		if (list.isEmpty()) {
 			return ResponseEntity.status(204).build();
@@ -59,10 +57,8 @@ public class PostagemController {
 		}
 	}
 
-	// BUSCA por palavras no texto
-	// retornando uma lista com todos os que tiverem o 'texto' digitado
 	@GetMapping("/texto/{texto_postagem}")
-	public ResponseEntity<List<Postagem>> getByTexto(@PathVariable(value = "texto_postagem") String texto) {
+	public ResponseEntity<List<Postagem>> getByText(@PathVariable(value = "texto_postagem") String texto) {
 		List<Postagem> list = repository.findAllByTextoContainingIgnoreCase(texto);
 		if (list.isEmpty()) {
 			return ResponseEntity.status(204).build();
@@ -71,30 +67,19 @@ public class PostagemController {
 		}
 	}
 
-	// SALVA um dado no banco de dados
-	// BOAZ
-	@PostMapping("/saveboaz")
-	public ResponseEntity<Postagem> savePostagem(@RequestBody Postagem postagem) {
-		return ResponseEntity.status(201).body(repository.save(postagem));
-	}
-
-	// SALVA um dado no banco de dados
-	// MARCELO
-	@PostMapping("/savemarcelo")
-	public ResponseEntity<Postagem> salvarPostagem(@RequestBody Postagem postagem) {
+	@PostMapping
+	public ResponseEntity<Postagem> savePostagem(@Valid @RequestBody Postagem postagem) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(postagem));
 	}
 
-	// ALTERA o que esta no banco de dados, precisa colocar o ID junto
-	@PutMapping("/update")
-	public ResponseEntity<Postagem> updatePostagem(@RequestBody Postagem postagem) {
+	@PutMapping
+	public ResponseEntity<Postagem> updatePostagem(@Valid @RequestBody Postagem postagem) {
 		return repository.findById(postagem.getId())
 				.map(resp -> ResponseEntity.status(200).body(repository.save(postagem))).orElseGet(() -> {
 					throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id não encontrado!");
 				});
 	}
 
-	// DELETAR um dado especifico
 	@SuppressWarnings("rawtypes")
 	@DeleteMapping("/delete/{id_postagem}")
 	public ResponseEntity deletePostagem(@PathVariable(value = "id_postagem") Long id) {

@@ -22,13 +22,13 @@ class UsuarioRespositoryTests {
 
 	@Autowired UsuarioRepository repository;
 	
-	@BeforeAll
+	/*@BeforeAll
 	void start() {
 		repository.save(new Usuario("Gabriel", "Krafa'Khan", "123456"));
 		repository.save(new Usuario("Rodrigo", "Imagine", "123456"));
 		repository.save(new Usuario("Rafael", "Ola Mundo", "123456"));
 		repository.save(new Usuario("Lucas", "Trapper", "123456"));
-	}
+	}*/
 	
 	@Test
 	@DisplayName("Primeiro Teste")
