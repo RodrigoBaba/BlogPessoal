@@ -24,14 +24,14 @@ public class SwaggerConfig {
 					.version("v0.0.1")
 				.license(new License()
 					.name("Blog Pessoal")
-					.url("<https://brazil.generation.org/>"))
+					.url("https://brazil.generation.org/"))
 				.contact(new Contact()
 					.name("Rodrigo N. Baba")
-					.url("<https://github.com/RodrigoBaba>")
+					.url("https://github.com/RodrigoBaba")
 					.email("rodrigonuciatelli@gmail.com")))
 				.externalDocs(new ExternalDocumentation()
 					.description("Github Project")
-					.url("<https://github.com/RodrigoBaba/BlogPessoal>"));
+					.url("https://github.com/RodrigoBaba/BlogPessoal"));
 	}
 
 	@Bean
