@@ -4,7 +4,7 @@ import java.nio.charset.Charset;
 import java.util.Optional;
 import org.apache.commons.codec.binary.Base64;
 
-import org.generation.blogPessoal.model.UserLogin;
+import org.generation.blogPessoal.model.UsuarioLogin;
 import org.generation.blogPessoal.model.Usuario;
 import org.generation.blogPessoal.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ public class UsuarioService {
 		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado!", null);
 	}
 	
-	public Optional<UserLogin> logarUsuario (Optional<UserLogin> user){
+	public Optional<UsuarioLogin> logarUsuario (Optional<UsuarioLogin> user){
 		Optional<Usuario> usuario = repository.findByUsuario(user.get().getUsuario());
 		
 		if(usuario.isPresent()) {
@@ -48,6 +48,7 @@ public class UsuarioService {
 				user.get().setId(usuario.get().getId());
 				user.get().setNome(usuario.get().getNome());
 				user.get().setFoto(usuario.get().getFoto());
+				user.get().setTipo(usuario.get().getTipo());
 				user.get().setToken(generatorBasicToken(usuario.get().getUsuario(), usuario.get().getSenha()));
 				user.get().setSenha(usuario.get().getSenha());
 								
