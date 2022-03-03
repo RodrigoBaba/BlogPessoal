@@ -67,12 +67,12 @@ public class PostagemController {
 		}
 	}
 
-	@PostMapping
+	@PostMapping("/post")
 	public ResponseEntity<Postagem> savePostagem(@Valid @RequestBody Postagem postagem) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(postagem));
 	}
 
-	@PutMapping
+	@PutMapping("/put")
 	public ResponseEntity<Postagem> updatePostagem(@Valid @RequestBody Postagem postagem) {
 		return repository.findById(postagem.getId())
 				.map(resp -> ResponseEntity.status(200).body(repository.save(postagem))).orElseGet(() -> {

@@ -30,7 +30,7 @@ public class TemaController {
 	@Autowired
 	private TemaRepository repository;
 
-	@GetMapping
+	@GetMapping("/all")
 	public ResponseEntity<List<Tema>> getAll() {
 		List<Tema> list = repository.findAll();
 
@@ -58,12 +58,12 @@ public class TemaController {
 		}
 	}
 
-	@PostMapping
+	@PostMapping("/post")
 	public ResponseEntity<Tema> saveTema(@Valid @RequestBody Tema tema) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(tema));
 	}
 
-	@PutMapping
+	@PutMapping("/put")
 	public ResponseEntity<Tema> updateTema(@Valid @RequestBody Tema tema) {
 		return repository.findById(tema.getId()).map(resp -> ResponseEntity.status(200).body(repository.save(tema)))
 				.orElseGet(() -> {
@@ -72,7 +72,7 @@ public class TemaController {
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/delete/{id}")
 	public void delete(@PathVariable Long id) {
 		Optional<Tema> tema = repository.findById(id);
 
